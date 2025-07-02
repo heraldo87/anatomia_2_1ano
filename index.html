@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo de Anatomia: Arraste e Solte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -14,73 +17,79 @@
             transition: all 0.2s ease-in-out;
         }
         .level-button.active {
-            background-color: #0d9488;
+            background-color: #0d9488; /* teal-700 */
             color: white;
             transform: scale(1.05);
-            box-shadow: 0 4px 14px 0 rgba(0, 115, 115, 0.39);
+            box-shadow: 0 4px 14px 0 rgba(13, 148, 136, 0.39);
         }
         .label-card {
             touch-action: none;
             cursor: grab;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color 0.3s, border-color 0.3s, opacity 0.3s;
         }
         .label-card.dragging {
             opacity: 0.5;
             cursor: grabbing;
+            z-index: 50;
         }
         .drop-zone {
             transition: all 0.3s ease;
-            border: 2px dashed #9ca3af;
+            border: 2px dashed #9ca3af; /* gray-400 */
         }
         .drop-zone.over {
-            background-color: #d1fae5;
-            border-color: #10b981;
+            background-color: #d1fae5; /* green-100 */
+            border-color: #10b981; /* green-500 */
             transform: scale(1.1);
         }
         .drop-zone.correct {
-            border: 2px solid #10b981;
-            background-color: #d1fae5;
-        }a
+            border: 2px solid #10b981; /* green-500 */
+            background-color: #d1fae5; /* green-100 */
+        }
         .drop-zone.correct .label-card {
             cursor: default;
-            background-color: #10b981;
+            background-color: #10b981; /* green-500 */
             color: white;
-            border-color: #059669;
+            border-color: #059669; /* green-600 */
         }
         #feedback {
             transition: opacity 0.5s;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-2 sm:p-4">
 
     <div class="w-full max-w-6xl mx-auto">
         <div class="text-center mb-4">
-            <h1 class="text-3xl font-bold text-teal-700">Jogo de Anatomia: Identifique as Estruturas</h1>
-            <p id="instruction" class="text-gray-600 mt-2">Selecione uma estrutura abaixo e arraste os nomes para os locais corretos.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-teal-700">Jogo de Anatomia: Identifique as Estruturas</h1>
+            <p id="instruction" class="text-gray-600 mt-2 text-base sm:text-lg px-2">Selecione uma estrutura abaixo e arraste os nomes para os locais corretos.</p>
         </div>
         
-        <div id="level-selector" class="flex flex-wrap justify-center items-center gap-4 mb-6">
+        <div id="level-selector" class="flex flex-wrap justify-center items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
             <!-- Botões de Nível serão inseridos aqui -->
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
             
-            <div id="labels-container" class="bg-white p-6 rounded-lg shadow-md flex flex-col space-y-3 order-2 lg:order-1">
-                <h2 class="text-xl font-bold text-center mb-3">Estruturas</h2>
-                <!-- Rótulos serão inseridos aqui pelo JS -->
+            <!-- Labels Container (aparece primeiro na ordem do código, mas a ordem visual é controlada por classes) -->
+            <div id="labels-container" class="bg-white p-3 sm:p-6 rounded-lg shadow-md flex flex-col space-y-2 sm:space-y-3 order-2 lg:order-1 lg:col-span-1">
+                <h2 class="text-lg sm:text-xl font-bold text-center mb-2 sm:mb-3">Estruturas</h2>
+                 <div id="labels-wrapper" class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                     <!-- Rótulos serão inseridos aqui pelo JS -->
+                </div>
             </div>
 
-            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md flex items-center justify-center order-1 lg:order-2">
-                <div id="diagram-container" class="relative w-[500px] h-[400px] bg-no-repeat bg-center bg-contain">
+            <!-- Diagram Container -->
+            <div class="bg-white p-3 sm:p-6 rounded-lg shadow-md flex items-center justify-center order-1 lg:order-2 lg:col-span-2">
+                <div id="diagram-container" class="relative w-full max-w-[500px] h-[300px] sm:h-[400px] bg-no-repeat bg-center bg-contain mx-auto">
                     <!-- Diagrama e Drop Zones serão inseridos aqui pelo JS -->
                 </div>
             </div>
+
         </div>
 
-        <div class="mt-6 text-center">
+        <div class="mt-4 sm:mt-6 text-center">
             <p id="feedback" class="text-lg font-semibold h-6"></p>
-            <button id="reset-button" class="mt-4 px-6 py-2 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 transition-colors">Reiniciar Nível</button>
+            <button id="reset-button" class="mt-2 sm:mt-4 px-4 py-2 sm:px-6 sm:py-2 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 active:bg-teal-800 transition-colors">Reiniciar Nível</button>
         </div>
     </div>
 
@@ -91,11 +100,11 @@
                 instruction: 'Arraste o nome de cada estrutura para sua localização correta na vértebra Atlas (C1).',
                 diagram: `
                     <div class="absolute w-full h-full">
-                        <div class="absolute w-[180px] h-[150px] bg-yellow-200/50" style="left: 160px; top: 125px; border-radius: 50% / 60%;"></div>
-                        <div class="absolute w-[400px] h-[90px] bg-yellow-200/50" style="left: 50px; top: 155px; border-radius: 45%;"></div>
-                        <div class="absolute w-[60px] h-[120px] bg-yellow-200/50" style="left: 80px; top: 140px; border-radius: 40% 50%;"></div>
-                        <div class="absolute w-[60px] h-[120px] bg-yellow-200/50" style="right: 80px; top: 140px; border-radius: 50% 40%;"></div>
-                        <div class="absolute w-[80px] h-[60px] bg-white" style="left: 210px; top: 170px; border-radius: 50%;"></div>
+                        <div class="absolute bg-yellow-200/50" style="width: 36%; height: 37.5%; left: 32%; top: 31.25%; border-radius: 50% / 60%;"></div>
+                        <div class="absolute bg-yellow-200/50" style="width: 80%; height: 22.5%; left: 10%; top: 38.75%; border-radius: 45%;"></div>
+                        <div class="absolute bg-yellow-200/50" style="width: 12%; height: 30%; left: 16%; top: 35%; border-radius: 40% 50%;"></div>
+                        <div class="absolute bg-yellow-200/50" style="width: 12%; height: 30%; right: 16%; top: 35%; border-radius: 50% 40%;"></div>
+                        <div class="absolute bg-white" style="width: 16%; height: 15%; left: 42%; top: 42.5%; border-radius: 50%;"></div>
                     </div>`,
                 labels: [
                     { id: 'l1-a', text: 'Arco Anterior', target: 'dz1-a' },
@@ -106,12 +115,12 @@
                     { id: 'l6-a', text: 'Forame para o Dente', target: 'dz6-a' },
                 ],
                 dropZones: [
-                    { id: 'dz1-a', top: '60px', left: '185px' },
-                    { id: 'dz2-a', top: '330px', left: '185px' },
-                    { id: 'dz3-a', top: '170px', left: '15px' },
-                    { id: 'dz4-a', top: '170px', left: '185px' },
-                    { id: 'dz5-a', top: '170px', left: '360px' },
-                    { id: 'dz6-a', top: '110px', left: '185px' },
+                    { id: 'dz1-a', top: '15%', left: '37%' },
+                    { id: 'dz2-a', top: '82.5%', left: '37%' },
+                    { id: 'dz3-a', top: '42.5%', left: '3%' },
+                    { id: 'dz4-a', top: '42.5%', left: '37%' },
+                    { id: 'dz5-a', top: '42.5%', left: '72%' },
+                    { id: 'dz6-a', top: '27.5%', left: '37%' },
                 ]
             },
             axis: {
@@ -119,9 +128,9 @@
                 instruction: 'Identifique as partes da vértebra Áxis (C2).',
                 diagram: `
                     <div class="absolute w-full h-full">
-                        <div class="absolute w-[80px] h-[60px] bg-yellow-200/50" style="left: 210px; top: 50px; border-radius: 40% 40% 50% 50%;"></div>
-                        <div class="absolute w-[300px] h-[180px] bg-yellow-200/50" style="left: 100px; top: 100px; border-radius: 50%;"></div>
-                        <div class="absolute w-[100px] h-[80px] bg-yellow-200/50" style="left: 200px; top: 270px; border-radius: 20% 20% 50% 50%;"></div>
+                        <div class="absolute bg-yellow-200/50" style="width: 16%; height: 15%; left: 42%; top: 12.5%; border-radius: 40% 40% 50% 50%;"></div>
+                        <div class="absolute bg-yellow-200/50" style="width: 60%; height: 45%; left: 20%; top: 25%; border-radius: 50%;"></div>
+                        <div class="absolute bg-yellow-200/50" style="width: 20%; height: 20%; left: 40%; top: 67.5%; border-radius: 20% 20% 50% 50%;"></div>
                     </div>`,
                 labels: [
                     { id: 'l1-b', text: 'Dente do Áxis', target: 'dz1-b' },
@@ -131,11 +140,11 @@
                     { id: 'l5-b', text: 'Face Articular Superior', target: 'dz5-b' },
                 ],
                 dropZones: [
-                    { id: 'dz1-b', top: '10px', left: '185px' },
-                    { id: 'dz2-b', top: '350px', left: '185px' },
-                    { id: 'dz3-b', top: '180px', left: '185px' },
-                    { id: 'dz4-b', top: '260px', left: '300px' },
-                    { id: 'dz5-b', top: '120px', left: '50px' },
+                    { id: 'dz1-b', top: '2.5%', left: '37%' },
+                    { id: 'dz2-b', top: '87.5%', left: '37%' },
+                    { id: 'dz3-b', top: '45%', left: '37%' },
+                    { id: 'dz4-b', top: '65%', left: '60%' },
+                    { id: 'dz5-b', top: '30%', left: '10%' },
                 ]
             },
             scapula: {
@@ -143,8 +152,8 @@
                 instruction: 'Identifique as partes da Escápula (vista posterior).',
                 diagram: `
                     <div class="absolute w-full h-full">
-                         <div class="absolute w-[250px] h-[350px] bg-yellow-200/50" style="left: 125px; top: 25px; border-radius: 80% 20% 55% 45% / 60% 30% 70% 40%;"></div>
-                         <div class="absolute w-[200px] h-[20px] bg-yellow-300/60" style="left: 100px; top: 100px; transform: rotate(-20deg);"></div>
+                         <div class="absolute bg-yellow-200/50" style="width: 50%; height: 87.5%; left: 25%; top: 6.25%; border-radius: 80% 20% 55% 45% / 60% 30% 70% 40%;"></div>
+                         <div class="absolute bg-yellow-300/60" style="width: 40%; height: 5%; left: 20%; top: 25%; transform: rotate(-20deg);"></div>
                     </div>`,
                 labels: [
                     { id: 'l1-c', text: 'Espinha da Escápula', target: 'dz1-c' },
@@ -155,21 +164,21 @@
                     { id: 'l6-c', text: 'Processo Coracoide', target: 'dz6-c' },
                 ],
                 dropZones: [
-                    { id: 'dz1-c', top: '100px', left: '180px' },
-                    { id: 'dz2-c', top: '60px', left: '50px' },
-                    { id: 'dz3-c', top: '50px', left: '250px' },
-                    { id: 'dz4-c', top: '220px', left: '200px' },
-                    { id: 'dz5-c', top: '350px', left: '185px' },
-                    { id: 'dz6-c', top: '10px', left: '10px', w: '140px' },
+                    { id: 'dz1-c', top: '25%', left: '36%' },
+                    { id: 'dz2-c', top: '15%', left: '10%' },
+                    { id: 'dz3-c', top: '12.5%', left: '50%' },
+                    { id: 'dz4-c', top: '55%', left: '40%' },
+                    { id: 'dz5-c', top: '87.5%', left: '37%' },
+                    { id: 'dz6-c', top: '2.5%', left: '2%', w: '28%' },
                 ]
             },
-             clavicula: {
+            clavicula: {
                 name: 'Clavícula',
                 instruction: 'Identifique as partes da Clavícula (vista superior).',
                 diagram: `
                     <div class="absolute w-full h-full flex items-center justify-center">
-                         <div class="absolute w-[400px] h-[60px] bg-yellow-200/50" style="border-radius: 50% 50% 50% 50% / 100% 100% 0% 0%; transform: rotate(5deg);"></div>
-                         <div class="absolute w-[400px] h-[60px] bg-yellow-200/50" style="border-radius: 50% 50% 50% 50% / 0% 0% 100% 100%; transform: rotate(-5deg);"></div>
+                         <div class="absolute w-[80%] h-[15%] bg-yellow-200/50" style="border-radius: 50% 50% 50% 50% / 100% 100% 0% 0%; transform: rotate(5deg);"></div>
+                         <div class="absolute w-[80%] h-[15%] bg-yellow-200/50" style="border-radius: 50% 50% 50% 50% / 0% 0% 100% 100%; transform: rotate(-5deg);"></div>
                     </div>`,
                 labels: [
                     { id: 'l1-f', text: 'Extremidade Esternal', target: 'dz1-f' },
@@ -178,10 +187,10 @@
                     { id: 'l4-f', text: 'Tubérculo Conoide', target: 'dz4-f' },
                 ],
                 dropZones: [
-                    { id: 'dz1-f', top: '180px', left: '350px', w: '140px' },
-                    { id: 'dz2-f', top: '180px', left: '10px', w: '140px' },
-                    { id: 'dz3-f', top: '100px', left: '180px' },
-                    { id: 'dz4-f', top: '250px', left: '80px' },
+                    { id: 'dz1-f', top: '45%', left: '70%', w: '28%' },
+                    { id: 'dz2-f', top: '45%', left: '2%', w: '28%' },
+                    { id: 'dz3-f', top: '25%', left: '36%' },
+                    { id: 'dz4-f', top: '62.5%', left: '16%' },
                 ]
             },
             coracao: {
@@ -189,10 +198,10 @@
                 instruction: 'Identifique as partes do coração (vista anterior).',
                 diagram: `
                     <div class="absolute w-full h-full">
-                        <div class="absolute w-[80px] h-[100px] bg-red-500/70" style="left: 210px; top: 20px; border-radius: 40px 40px 0 0;"></div>
-                        <div class="absolute w-[70px] h-[80px] bg-blue-500/70" style="left: 150px; top: 60px; border-radius: 30px 30px 0 0;"></div>
-                        <div class="absolute w-[50px] h-[80px] bg-blue-800/70" style="right: 80px; top: 50px; border-radius: 20px 20px 0 0;"></div>
-                        <div class="absolute w-[300px] h-[250px] bg-pink-300/60" style="left: 100px; top: 120px; border-radius: 50% / 40% 40% 60% 60%;"></div>
+                        <div class="absolute bg-red-500/70" style="width: 16%; height: 25%; left: 42%; top: 5%; border-radius: 40px 40px 0 0;"></div>
+                        <div class="absolute bg-blue-500/70" style="width: 14%; height: 20%; left: 30%; top: 15%; border-radius: 30px 30px 0 0;"></div>
+                        <div class="absolute bg-blue-800/70" style="width: 10%; height: 20%; right: 16%; top: 12.5%; border-radius: 20px 20px 0 0;"></div>
+                        <div class="absolute bg-pink-300/60" style="width: 60%; height: 62.5%; left: 20%; top: 30%; border-radius: 50% / 40% 40% 60% 60%;"></div>
                     </div>`,
                 labels: [
                     { id: 'l1-d', text: 'Aorta Ascendente', target: 'dz1-d' },
@@ -203,12 +212,12 @@
                     { id: 'l6-d', text: 'Átrio Direito', target: 'dz6-d' },
                 ],
                 dropZones: [
-                    { id: 'dz1-d', top: '10px', left: '200px', w: '140px'},
-                    { id: 'dz2-d', top: '70px', left: '100px' },
-                    { id: 'dz3-d', top: '10px', left: '330px' },
-                    { id: 'dz4-d', top: '280px', left: '250px' },
-                    { id: 'dz5-d', top: '280px', left: '100px' },
-                    { id: 'dz6-d', top: '150px', left: '330px' },
+                    { id: 'dz1-d', top: '2.5%', left: '40%', w: '28%'},
+                    { id: 'dz2-d', top: '17.5%', left: '20%' },
+                    { id: 'dz3-d', top: '2.5%', left: '66%' },
+                    { id: 'dz4-d', top: '70%', left: '50%' },
+                    { id: 'dz5-d', top: '70%', left: '20%' },
+                    { id: 'dz6-d', top: '37.5%', left: '66%' },
                 ]
             },
             pulmoes: {
@@ -217,13 +226,13 @@
                 diagram: `
                     <div class="absolute w-full h-full">
                         <!-- Traqueia -->
-                        <div class="absolute w-[40px] h-[120px] bg-pink-200/80" style="left: 230px; top: 10px; border-radius: 10px;"></div>
-                        <!-- Pulmão Esquerdo (vista do observador) -->
-                        <div class="absolute w-[150px] h-[250px] bg-pink-300/60" style="left: 50px; top: 120px; border-radius: 80% 40% 60% 80% / 90% 80% 60% 50%;"></div>
-                        <!-- Pulmão Direito (vista do observador) -->
-                        <div class="absolute w-[150px] h-[250px] bg-pink-300/60" style="right: 50px; top: 120px; border-radius: 40% 80% 80% 60% / 80% 90% 50% 60%;"></div>
+                        <div class="absolute bg-pink-200/80" style="width: 8%; height: 30%; left: 46%; top: 2.5%; border-radius: 10px;"></div>
+                        <!-- Pulmão Esquerdo -->
+                        <div class="absolute bg-pink-300/60" style="width: 30%; height: 62.5%; left: 10%; top: 30%; border-radius: 80% 40% 60% 80% / 90% 80% 60% 50%;"></div>
+                        <!-- Pulmão Direito -->
+                        <div class="absolute bg-pink-300/60" style="width: 30%; height: 62.5%; right: 10%; top: 30%; border-radius: 40% 80% 80% 60% / 80% 90% 50% 60%;"></div>
                          <!-- Carina -->
-                        <div class="absolute w-[80px] h-[40px] bg-pink-200/80" style="left: 210px; top: 120px; border-radius: 50% / 0 0 100% 100%;"></div>
+                        <div class="absolute bg-pink-200/80" style="width: 16%; height: 10%; left: 42%; top: 30%; border-radius: 50% / 0 0 100% 100%;"></div>
                     </div>`,
                 labels: [
                     { id: 'l1-e', text: 'Traqueia', target: 'dz1-e' },
@@ -234,18 +243,18 @@
                     { id: 'l6-e', text: 'Lobo Inferior Esquerdo', target: 'dz6-e' },
                 ],
                 dropZones: [
-                    { id: 'dz1-e', top: '20px', left: '185px' },
-                    { id: 'dz2-e', top: '150px', left: '320px' },
-                    { id: 'dz3-e', top: '220px', left: '320px' },
-                    { id: 'dz4-e', top: '290px', left: '320px' },
-                    { id: 'dz5-e', top: '150px', left: '50px' },
-                    { id: 'dz6-e', top: '250px', left: '50px' },
+                    { id: 'dz1-e', top: '5%', left: '37%' },
+                    { id: 'dz2-e', top: '37.5%', left: '64%' },
+                    { id: 'dz3-e', top: '55%', left: '64%' },
+                    { id: 'dz4-e', top: '72.5%', left: '64%' },
+                    { id: 'dz5-e', top: '37.5%', left: '10%' },
+                    { id: 'dz6-e', top: '62.5%', left: '10%' },
                 ]
             }
         };
 
         const levelSelector = document.getElementById('level-selector');
-        const labelsContainer = document.getElementById('labels-container');
+        const labelsWrapper = document.getElementById('labels-wrapper');
         const diagramContainer = document.getElementById('diagram-container');
         const feedbackEl = document.getElementById('feedback');
         const resetButton = document.getElementById('reset-button');
@@ -254,7 +263,7 @@
         let draggedItem = null;
         let correctPlacements = 0;
         let currentLevelKey = 'atlas';
-
+        
         function createLevelButtons() {
             levelSelector.innerHTML = '';
             Object.keys(gameData).forEach(key => {
@@ -262,7 +271,7 @@
                 const button = document.createElement('button');
                 button.textContent = level.name;
                 button.dataset.level = key;
-                button.className = 'level-button px-4 py-2 bg-white text-teal-700 font-semibold rounded-lg shadow-md hover:bg-teal-50';
+                button.className = 'level-button px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base bg-white text-teal-700 font-semibold rounded-lg shadow-md hover:bg-teal-50';
                 if (key === currentLevelKey) {
                     button.classList.add('active');
                 }
@@ -281,7 +290,7 @@
             const level = gameData[currentLevelKey];
 
             instructionEl.textContent = level.instruction;
-            labelsContainer.innerHTML = '<h2 class="text-xl font-bold text-center mb-3">Estruturas</h2>';
+            labelsWrapper.innerHTML = '';
             diagramContainer.innerHTML = level.diagram;
             
             level.labels.forEach(labelInfo => {
@@ -290,17 +299,18 @@
                 label.textContent = labelInfo.text;
                 label.draggable = true;
                 label.dataset.target = labelInfo.target;
-                label.className = 'label-card bg-gray-200 p-3 rounded-lg text-center border-2 border-gray-300';
-                labelsContainer.appendChild(label);
+                label.className = 'label-card bg-gray-200 p-2 sm:p-3 rounded-lg text-center border-2 border-gray-300 text-sm sm:text-base';
+                labelsWrapper.appendChild(label);
             });
 
             level.dropZones.forEach(zoneInfo => {
                 const zone = document.createElement('div');
                 zone.id = zoneInfo.id;
-                zone.className = 'drop-zone h-10 rounded-lg absolute flex items-center justify-center';
+                zone.className = 'drop-zone rounded-lg absolute flex items-center justify-center p-1';
                 zone.style.top = zoneInfo.top;
                 zone.style.left = zoneInfo.left;
-                zone.style.width = zoneInfo.w || '128px';
+                zone.style.width = zoneInfo.w || '25.6%';
+                zone.style.height = '12%';
                 diagramContainer.appendChild(zone);
             });
             
@@ -328,81 +338,119 @@
             }
         }
 
+        function handleDropOnZone(zone) {
+            if (!zone || !draggedItem || zone.hasChildNodes()) {
+                if (draggedItem && !zone?.hasChildNodes()) {
+                    showFeedback('Ops! Tente novamente.', true);
+                }
+                return;
+            }
+
+            if (draggedItem.dataset.target === zone.id) {
+                zone.appendChild(draggedItem);
+                draggedItem.draggable = false;
+                zone.classList.add('correct');
+                showFeedback('Correto!', false);
+                correctPlacements++;
+                checkWin();
+            } else {
+                showFeedback('Ops! Tente novamente.', true);
+            }
+        }
+
         function addEventListeners() {
             const labels = document.querySelectorAll('.label-card');
             const dropZones = document.querySelectorAll('.drop-zone');
 
+            // --- MOUSE DRAG & DROP ---
             labels.forEach(label => {
-                const handleDragStart = (e) => {
-                    const event = e.touches ? e.touches[0] : e;
+                label.addEventListener('dragstart', (e) => {
+                    if (label.parentElement.classList.contains('correct')) {
+                        e.preventDefault();
+                        return;
+                    }
                     draggedItem = label;
                     setTimeout(() => label.classList.add('dragging'), 0);
-                };
-                const handleDragEnd = () => {
-                    if(draggedItem) {
-                       draggedItem.classList.remove('dragging');
-                       draggedItem = null;
-                    }
-                };
+                });
 
-                label.addEventListener('dragstart', handleDragStart);
-                label.addEventListener('dragend', handleDragEnd);
-                label.addEventListener('touchstart', handleDragStart, { passive: true });
-                label.addEventListener('touchend', handleDragEnd);
+                label.addEventListener('dragend', () => {
+                    if (draggedItem) draggedItem.classList.remove('dragging');
+                    draggedItem = null;
+                });
             });
 
             dropZones.forEach(zone => {
-                const handleDragOver = (e) => {
+                zone.addEventListener('dragover', (e) => {
                     e.preventDefault();
-                    if (!zone.hasChildNodes()) {
-                        zone.classList.add('over');
-                    }
-                };
-                const handleDragLeave = () => zone.classList.remove('over');
-                const handleDrop = (e) => {
+                    if (!zone.hasChildNodes()) zone.classList.add('over');
+                });
+                zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+                zone.addEventListener('drop', (e) => {
                     e.preventDefault();
                     zone.classList.remove('over');
-                    
-                    if (zone.hasChildNodes() || !draggedItem) return;
-
-                    if (draggedItem.dataset.target === zone.id) {
-                        zone.appendChild(draggedItem);
-                        draggedItem.draggable = false;
-                        zone.classList.add('correct');
-                        showFeedback('Correto!', false);
-                        correctPlacements++;
-                        checkWin();
-                    } else {
-                        showFeedback('Ops! Tente novamente.', true);
-                    }
-                };
-                
-                zone.addEventListener('dragover', handleDragOver);
-                zone.addEventListener('dragleave', handleDragLeave);
-                zone.addEventListener('drop', handleDrop);
-                
-                zone.addEventListener('touchmove', (e) => {
-                    e.preventDefault();
-                    const touchLocation = e.targetTouches[0];
-                    const element = document.elementFromPoint(touchLocation.pageX, touchLocation.pageY);
-                    if (element && element.classList.contains('drop-zone')) {
-                        document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('over'));
-                        element.classList.add('over');
-                    }
-                }, { passive: false });
-
-                zone.addEventListener('touchend', (e) => {
-                    const element = document.elementFromPoint(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
-                    if(element && element.classList.contains('drop-zone')){
-                        handleDrop(e);
-                    }
-                    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('over'));
+                    handleDropOnZone(zone);
                 });
+            });
+
+            // --- TOUCH DRAG & DROP (REVISED) ---
+            let touchDragItem = null;
+            let lastTouchZone = null;
+
+            labels.forEach(label => {
+                label.addEventListener('touchstart', (e) => {
+                    if (label.parentElement.classList.contains('correct')) return;
+                    touchDragItem = label;
+                    touchDragItem.classList.add('dragging');
+                }, { passive: false });
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!touchDragItem) return;
+                e.preventDefault(); 
+                
+                const touch = e.targetTouches[0];
+                
+                // Use pointer-events to find element under touch
+                touchDragItem.style.pointerEvents = 'none';
+                const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+                touchDragItem.style.pointerEvents = 'auto';
+
+                if (lastTouchZone && lastTouchZone !== elementUnder) {
+                    lastTouchZone.classList.remove('over');
+                }
+
+                if (elementUnder && elementUnder.classList.contains('drop-zone') && !elementUnder.hasChildNodes()) {
+                    elementUnder.classList.add('over');
+                    lastTouchZone = elementUnder;
+                } else {
+                    if (lastTouchZone && (!elementUnder || !elementUnder.classList.contains('drop-zone'))) {
+                        lastTouchZone.classList.remove('over');
+                        lastTouchZone = null;
+                    }
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchend', (e) => {
+                if (!touchDragItem) return;
+
+                // Set the global draggedItem for the shared drop function
+                draggedItem = touchDragItem;
+
+                if (lastTouchZone) {
+                    handleDropOnZone(lastTouchZone);
+                    lastTouchZone.classList.remove('over');
+                }
+                
+                touchDragItem.classList.remove('dragging');
+                
+                // Cleanup
+                touchDragItem = null;
+                lastTouchZone = null;
+                draggedItem = null;
             });
         }
 
         resetButton.addEventListener('click', initializeGame);
-
         createLevelButtons();
         initializeGame();
     </script>
